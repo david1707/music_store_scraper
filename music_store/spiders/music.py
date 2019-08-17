@@ -26,16 +26,23 @@ class MusicSpider(Spider):
             '//h1/span[@itemprop="brand"]/text()').extract_first()
         name = response.xpath(
             '//h1/span[@itemprop="name"]/text()').extract_first()
-        rating = len(response.xpath('//div[@class="headline-box row"]//i[@class="icon icon-star orange"]'))
+        rating = len(response.xpath(
+            '//div[@class="headline-box row"]//i[@class="icon icon-star orange"]'))
         rating = 'This produce has not been rated yet' if rating == 0 else f'{rating} out of 5'
+        price = response.xpath(
+            '//span[@class="final kor-product-sale-price-value"]/text()').extract_first()
+        image = response.xpath(
+            '//a[@id="js-easyzoom-large-image"]/@href').extract_first().replace('//', 'http://')
         description = ' '.join(response.xpath(
-            '//div[@class="contentText"]//text()').extract())
+            '//div[@class="contentText"]//text()').extract()).strip()
         url = response.url
 
         yield {
             'brand': brand,
             'name': name,
             'rating': rating,
+            'price': price,
+            'image': image,
             'description': description,
             'url': url,
         }
