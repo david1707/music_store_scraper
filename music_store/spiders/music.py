@@ -26,9 +26,18 @@ class MusicSpider(Spider):
             '//h1/span[@itemprop="brand"]/text()').extract_first()
         name = response.xpath(
             '//h1/span[@itemprop="name"]/text()').extract_first()
-        rating = len(response.xpath(
+
+        rating_global = len(response.xpath(
             '//div[@class="headline-box row"]//i[@class="icon icon-star orange"]'))
-        rating = 'This produce has not been rated yet' if rating == 0 else f'{rating} out of 5'
+        rating_global = 'This product has not been rated yet' if rating_global == 0 else f'{rating_global} out of 5'
+
+        rating = response.xpath(
+            '//ul[@class="review-attribute-list margauto-xsl list-unstyled"]/li/span[2]/text()').extract()
+        rating = rating if len(rating) != 0 else 'This product has not been voted yet.'
+        votes_raw = response.xpath('//ul[@class="review-stars-list margauto-xsl list-unstyled"]//span/text()').extract()
+        votes = list(zip(votes_raw[::2], votes_raw[1::2]))
+        votes = votes if len(votes) != 0 else 'This product has not been voted yet.'
+
         price = response.xpath(
             '//span[@class="final kor-product-sale-price-value"]/text()').extract_first()
         image = response.xpath(
@@ -40,7 +49,9 @@ class MusicSpider(Spider):
         yield {
             'brand': brand,
             'name': name,
+            'rating_global': rating_global,
             'rating': rating,
+            'votes': votes,
             'price': price,
             'image': image,
             'description': description,
