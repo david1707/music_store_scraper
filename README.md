@@ -1,5 +1,13 @@
-# music_store_scraper
-A Scrapy script to scrap all the instruments of a certain type (Bass, Guitar, Drums, etc)
+# Music Store Scraper
+A Scrapy (Python Framework) script to fetch all the instruments of a certain type (Bass, Guitar, Drums, etc)
 
 ## Work In Progress
-Right it is a WIP. After parsing and yielding the instruments, I'll start adding things to the pipelines, items, downloading images, etc
+Right now only fetches:
+- Brand
+- Name
+- Rating
+- Description
+- URL
+
+
+I'll start adding things to the pipelines, items, downloading images, more instrument information, etc

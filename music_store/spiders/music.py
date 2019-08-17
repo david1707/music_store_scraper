@@ -12,12 +12,30 @@ class MusicSpider(Spider):
             f'https://www.musicstore.com/en_OE/EUR/search;pgid=NwXg2xauQc5SRpGRd7yx_mNm0000Q2bzyey0?SearchTerm={self.instrument}&SearchParameter=%26%40QueryTerm%3Dbass%26FollowSearch%3D9753']
 
     def parse(self, response):
-        items = response.xpath('//div[contains(@class, "image-box")]/a[@class="js-tracking"]/@href').extract()
+        items = response.xpath(
+            '//div[contains(@class, "image-box")]/a[@class="js-tracking"]/@href').extract()
         for item in items:
             yield Request(item, callback=self.parse_instrument)
 
-        next_page_url = response.xpath('//a[@title="to next page"]/@href').extract_first().strip()
+        next_page_url = response.xpath(
+            '//a[@title="to next page"]/@href').extract_first().strip()
         yield Request(next_page_url, callback=self.parse)
 
     def parse_instrument(self, response):
-        print(response.url)
+        brand = response.xpath(
+            '//h1/span[@itemprop="brand"]/text()').extract_first()
+        name = response.xpath(
+            '//h1/span[@itemprop="name"]/text()').extract_first()
+        rating = len(response.xpath('//div[@class="headline-box row"]//i[@class="icon icon-star orange"]'))
+        rating = 'This produce has not been rated yet' if rating == 0 else f'{rating} out of 5'
+        description = ' '.join(response.xpath(
+            '//div[@class="contentText"]//text()').extract())
+        url = response.url
+
+        yield {
+            'brand': brand,
+            'name': name,
+            'rating': rating,
+            'description': description,
+            'url': url,
+        }
