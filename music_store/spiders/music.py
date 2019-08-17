@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from scrapy import Spider, Request
 
+from music_store.items import MusicStoreItem
+
 
 class MusicSpider(Spider):
     name = 'music'
@@ -22,6 +24,8 @@ class MusicSpider(Spider):
         yield Request(next_page_url, callback=self.parse)
 
     def parse_instrument(self, response):
+        instrument_item = MusicStoreItem()
+
         brand = response.xpath(
             '//h1/span[@itemprop="brand"]/text()').extract_first()
         name = response.xpath(
@@ -33,10 +37,13 @@ class MusicSpider(Spider):
 
         rating = response.xpath(
             '//ul[@class="review-attribute-list margauto-xsl list-unstyled"]/li/span[2]/text()').extract()
-        rating = rating if len(rating) != 0 else 'This product has not been voted yet.'
-        votes_raw = response.xpath('//ul[@class="review-stars-list margauto-xsl list-unstyled"]//span/text()').extract()
+        rating = rating if len(
+            rating) != 0 else 'This product has not been voted yet.'
+        votes_raw = response.xpath(
+            '//ul[@class="review-stars-list margauto-xsl list-unstyled"]//span/text()').extract()
         votes = list(zip(votes_raw[::2], votes_raw[1::2]))
-        votes = votes if len(votes) != 0 else 'This product has not been voted yet.'
+        votes = votes if len(
+            votes) != 0 else 'This product has not been voted yet.'
 
         price = response.xpath(
             '//span[@class="final kor-product-sale-price-value"]/text()').extract_first()
@@ -46,14 +53,14 @@ class MusicSpider(Spider):
             '//div[@class="contentText"]//text()').extract()).strip()
         url = response.url
 
-        yield {
-            'brand': brand,
-            'name': name,
-            'rating_global': rating_global,
-            'rating': rating,
-            'votes': votes,
-            'price': price,
-            'image': image,
-            'description': description,
-            'url': url,
-        }
+        instrument_item['brand'] = brand
+        instrument_item['name'] = name
+        instrument_item['rating_global'] = rating_global
+        instrument_item['rating'] = rating
+        instrument_item['votes'] = votes
+        instrument_item['price'] = price
+        instrument_item['image'] = image
+        instrument_item['description'] = description
+        instrument_item['url'] = url
+
+        yield instrument_item

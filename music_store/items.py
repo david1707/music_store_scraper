@@ -9,6 +9,12 @@ import scrapy
 
 
 class MusicStoreItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    brand = scrapy.Field()
+    name = scrapy.Field()
+    rating_global = scrapy.Field()
+    rating = scrapy.Field()
+    votes = scrapy.Field()
+    price = scrapy.Field()
+    image = scrapy.Field()
+    description = scrapy.Field()
+    url = scrapy.Field()
