@@ -25,9 +25,13 @@ Don't forget to edit your settings.py adding your USER_AGENT, DOWNLOAD_DELAY and
 Right now only fetches:
 - Brand
 - Name
+- Rating Global
 - Rating
+- Votes
+- Price
+- Image
 - Description
 - URL
 
 
-I'll start adding things to the pipelines, items, downloading images, more instrument information, etc
+I'll start adding things to the pipelines, downloading images, more instrument information, etc
