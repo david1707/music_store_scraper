@@ -19,9 +19,9 @@ class MusicSpider(Spider):
         for item in items:
             yield Request(item, callback=self.parse_instrument)
 
-        next_page_url = response.xpath(
-            '//a[@title="to next page"]/@href').extract_first().strip()
-        yield Request(next_page_url, callback=self.parse)
+        # next_page_url = response.xpath(
+        #     '//a[@title="to next page"]/@href').extract_first().strip()
+        # yield Request(next_page_url, callback=self.parse)
 
     def parse_instrument(self, response):
         instrument_item = MusicStoreItem()
@@ -31,19 +31,13 @@ class MusicSpider(Spider):
         name = response.xpath(
             '//h1/span[@itemprop="name"]/text()').extract_first()
 
-        rating_global = len(response.xpath(
+        global_rating = len(response.xpath(
             '//div[@class="headline-box row"]//i[@class="icon icon-star orange"]'))
-        rating_global = 'This product has not been rated yet' if rating_global == 0 else f'{rating_global} out of 5'
 
         rating = response.xpath(
             '//ul[@class="review-attribute-list margauto-xsl list-unstyled"]/li/span[2]/text()').extract()
-        rating = rating if len(
-            rating) != 0 else 'This product has not been voted yet.'
-        votes_raw = response.xpath(
+        votes = response.xpath(
             '//ul[@class="review-stars-list margauto-xsl list-unstyled"]//span/text()').extract()
-        votes = list(zip(votes_raw[::2], votes_raw[1::2]))
-        votes = votes if len(
-            votes) != 0 else 'This product has not been voted yet.'
 
         price = response.xpath(
             '//span[@class="final kor-product-sale-price-value"]/text()').extract_first()
@@ -55,7 +49,7 @@ class MusicSpider(Spider):
 
         instrument_item['brand'] = brand
         instrument_item['name'] = name
-        instrument_item['rating_global'] = rating_global
+        instrument_item['global_rating'] = global_rating
         instrument_item['rating'] = rating
         instrument_item['votes'] = votes
         instrument_item['price'] = price

@@ -11,7 +11,7 @@ import scrapy
 class MusicStoreItem(scrapy.Item):
     brand = scrapy.Field()
     name = scrapy.Field()
-    rating_global = scrapy.Field()
+    global_rating = scrapy.Field()
     rating = scrapy.Field()
     votes = scrapy.Field()
     price = scrapy.Field()
